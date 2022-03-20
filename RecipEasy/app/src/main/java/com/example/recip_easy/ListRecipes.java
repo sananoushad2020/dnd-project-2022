@@ -7,8 +7,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +29,8 @@ import java.util.ArrayList;
 
 public class ListRecipes extends AppCompatActivity{
     ListView recipeOptions;
-    ArrayList<String> recipes =  new ArrayList<>();
+    ArrayList<Recipe> recipes =  new ArrayList<>();
+    ArrayList<String> ids =  new ArrayList<>();
     Context context;
     String key = "8ad6e9fe49b04bf9b77792e7a305833e";
     public static String name = "";
@@ -72,14 +77,37 @@ public class ListRecipes extends AppCompatActivity{
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject individual = data.getJSONObject(i);
                     String t = individual.get("title").toString();
+                    String id = individual.get("id").toString();
                     Log.d("hi",t);
                     recipes.add(t);
+                    ids.add(id);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             ArrayAdapter<String> adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, android.R.id.text1, recipes);
             recipeOptions.setAdapter(adapter);
+            recipeOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
+                    /**
+                    adapter.getItem(position);
+                    ids.get(position);
+                    try{
+                        url = new URL("https://api.spoonacular.com/recipes/4632/card");
+                        URLConnection urlConnection = url.openConnection();
+                        InputStream inputStream = urlConnection.getInputStream();
+                        BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                     **/
+                    new DownloadImageTask((ImageView) findViewById(R.id.imageView1))
+                            .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+                }
+            });
         }
     }
 }
